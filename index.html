@@ -2,10 +2,184 @@
 <html lang="en">
 <head>
     <title>Exercise 2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <style>
+        html {
+            font-family: Verdana, sans-serif;
+        }
+        html, body {
+            position:fixed;
+            top:0;
+            bottom:0;
+            left:0;
+            right:0;
+        }
+        body {
+            overflow: hidden;
+        }
+        input[type="button"]{
+            background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #606060), color-stop(1, #606060) );
+            background:-moz-linear-gradient( center top, #606060 5%, #606060 100% );
+            filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#606060', endColorstr='#606060');
+            background-color:#606060;
+            border:1px solid #606060;
+            display:inline-block;
+            color:#fff;
+            font-family:Arial;
+            font-size:50px;
+            line-height:28px;
+            text-decoration:none;
+            text-align:center;
+            margin-bottom:1.5px;
+            margin-left: 1.5px;
+            margin-right:1.5px ;
+            margin-top:1.5px ;
+            height: 75px; 
+        }
+        input[type="button"]{
+        width: 184px;
+        }
+        #body {
+            width: 100%;
+            height: 100%;
+        }
+        #btnC{
+            width:372.7px;
+        }
+        #btn0{
+            width:374.7px;
+        }
+        #btn0,#btndecimal,#btndivide {
+            margin-right: 0.1px;
+        }
+        #btn7,#btn4,#btn1,#btn0,#btnequals {
+            margin-left: 0.01px;
+        }        
+        #btnequals {
+            height: 61px;
+            width: 944px;
+            margin-top: 3px;
+        }
+        input[type="button"]:active {
+            position:relative;
+            background:#989898;
+        } 
+        input:focus {
+            outline:0;
+        }
+        input[type="Text"] {
+            padding-left: 10px;
+            margin-bottom: 1.5px;
+            font-size: 100px;
+            background-color: #202020 ;
+            height:135px;
+            width: 935px;
+            border:none;
+            color:white;
+        }
+    </style>
+
 </head>
 <body>
-    <center>
-        <h1>Kalkulator</h1>
-    </center>
-</body>
+        <center>
+            <h1>Kalkulator</h1>
+        </center>
+        <div id="body">
+            <form name="Keypad" action="">
+                <input name="readOut" id="output" type="Text" value="0" readonly>
+                <table>
+                    <tr>
+                        <td><input id="btn7" type="Button" value="  7  " onclick="numPressed(7)"></td>
+                        <td><input id="btn8" type="Button" value="  8  " onclick="numPressed(8)"></td>        
+                        <td><input id="btn9" type="Button" value="  9  " onclick="numPressed(9)"></td>
+                        <td colspan="2"><input id="btnC" type="Button" value="  C  " onclick="Clear()"></td>
+                    </tr>
+                    <tr>
+                        <td><input id="btn4" type="Button" value="  4" onclick="numPressed(4)"></td>
+                        <td><input id="btn5" type="Button" value="  5   "onclick="numPressed(5)"></td>        
+                        <td><input id="btn6" type="Button" value="  6  " onclick="numPressed(6)"></td>
+                        <td><input id="btnplusminus" type="Button" value=" +/- " onclick="Neg()"></td>
+                        <td><input id="btnplus" type="Button" value="  +  " onclick="Operation('+')"></td>
+                    </tr>
+                    <tr>
+                        <td><input id="btn1" type="Button" value="  1  " onclick="numPressed(1)"></td>
+                        <td><input id="btn2" type="Button" value="  2  " onclick="numPressed(2)"></td>        
+                        <td><input id="btn3" type="Button" value="  3  " onclick="numPressed(3)"></td>
+                        <td><input id="btnmultiply" type="Button" value="  *  " onclick="Operation('*')"></td>
+                        <td><input id="btnminus" type="Button" value="   -   " onclick="Operation('-')"></td>
+                    </tr>
+                </table>
+                <input id="btn0" type="Button" value="  0  " onclick="numPressed(0)">
+                <input id="btndecimal" type="Button" value="   .  " onclick="Decimal()">      
+                <input id="btndivide" type="Button" value="   /   " onclick="Operation('/')">
+                <input id="btnequals" type="Button" value="  =  " onclick="Operation('=')">
+            </form>
+        </div>
+        <script>
+            var FKeyPad = document.Keypad;
+            var accumulate = 0;
+            var flagNewNum = false;
+            var pendingOp = "";
+            function numPressed (Num) {
+                if (flagNewNum) {
+                    FKeyPad.readOut.value  = Num;
+                    flagNewNum = false;
+                }
+                else {
+                    if (FKeyPad.readOut.value == "0")
+                        FKeyPad.readOut.value = Num;
+                    else
+                        FKeyPad.readOut.value += Num;
+                }
+            }
+            function Operation (Op) {
+                var readOut = FKeyPad.readOut.value;
+                if (flagNewNum && pendingOp != "=");
+                else
+                {
+                    flagNewNum = true;
+                    if ( '+' == pendingOp )
+                        accumulate += parseFloat(readOut);
+                    else if ( '-' == pendingOp )
+                        accumulate -= parseFloat(readOut);
+                    else if ( '/' == pendingOp )
+                        accumulate /= parseFloat(readOut);
+                    else if ( '*' == pendingOp )
+                        accumulate *= parseFloat(readOut);
+                    else
+                        accumulate = parseFloat(readOut);
+                    FKeyPad.readOut.value = accumulate;
+                    pendingOp = Op;
+                }
+            }
+            function Decimal () {
+                var curreadOut = FKeyPad.readOut.value;
+                if (flagNewNum) {
+                    curreadOut = "0.";
+                    flagNewNum = false;
+                }
+                else
+                {
+                    if (curreadOut.indexOf(".") == -1)
+                        curreadOut += ".";
+                }
+                FKeyPad.readOut.value = curreadOut;
+            }
+            function ClearEntry () {
+                FKeyPad.readOut.value = "0";
+                flagNewNum = true;
+            }
+            function Clear () {
+                accumulate = 0;
+                pendingOp = "";
+                ClearEntry();
+            }
+            function Neg () {
+                FKeyPad.readOut.value = parseFloat(FKeyPad.readOut.value) * -1;
+            }
+            function Percent () {
+                FKeyPad.readOut.value = (parseFloat(FKeyPad.ReadOut.value) / 100) * parseFloat(accumulate);
+            }
+        </script>
 </html>
